@@ -21,11 +21,18 @@ db_name = os.environ['DB_NAME']
 # Portfolio data to seed
 PROFILE_DATA = {
     "name": "Anil Yadav",
-    "title": "Senior Technical Lead",
+    "title": "Senior Technical Lead & Cloud Infrastructure Consultant",
     "company": "Nucleus Software Japan K.K.",
     "location": "Tokyo, Japan",
-    "tagline": "Experienced Senior Technical Lead with 16+ years in IT innovation",
-    "summary": "Experienced Senior Technical Lead with a demonstrated history of working in the information technology and services industry. Strong engineering professional skilled in Requirements Analysis, Oracle Database, Agile Methodologies, PL/SQL, and Software Development Life Cycle (SDLC).",
+    "tagline": "16+ years building cloud infrastructure & AI-powered solutions | Open for consulting | Japan PR holder",
+    "summary": "Senior Technical Lead with 16+ years of expertise in cloud infrastructure, AI-based software solutions, and enterprise architecture. Specialized in helping companies in India and Tokyo scale their cloud operations and implement cutting-edge AI technologies. Currently available for consulting projects with no visa restrictions (Japan Permanent Resident).",
+    "profileImage": "https://customer-assets.emergentagent.com/job_skills-spotlight-13/artifacts/4d83nfbn_Gemini_Generated_Image_fdcysfdcysfdcysf.png",
+    "consulting": {
+        "available": True,
+        "specializations": ["Cloud Infrastructure", "AI-based Software", "Enterprise Architecture", "System Migration"],
+        "targetMarkets": ["India", "Tokyo", "Japan"],
+        "visaStatus": "Japan Permanent Resident - No visa sponsorship required"
+    },
     "contact": {
         "email": "anilyadav83@gmail.com",
         "linkedin": "www.linkedin.com/in/anil-yadav-a1223211",
