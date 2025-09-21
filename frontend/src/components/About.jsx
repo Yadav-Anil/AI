@@ -28,22 +28,22 @@ const About = () => {
     {
       icon: <Calendar className="text-blue-600" size={24} />,
       title: "16+ Years Experience",
-      description: "Extensive experience in IT and software development"
+      description: "Extensive experience in cloud infrastructure and AI-based software solutions"
     },
     {
       icon: <TrendingUp className="text-green-600" size={24} />,
-      title: "Career Growth",
-      description: "Progressed from Software Engineer to Senior Technical Lead"
+      title: "Consulting Available",
+      description: "Open for cloud infrastructure and AI consulting projects"
     },
     {
       icon: <Award className="text-purple-600" size={24} />,
-      title: "Cloud Certified",
-      description: "Multiple certifications in Azure, AWS, and emerging technologies"
+      title: "Multi-Cloud Certified",
+      description: "Azure, AWS, GCP certifications with hands-on experience"
     },
     {
       icon: <User className="text-orange-600" size={24} />,
-      title: "Technical Leadership",
-      description: "Leading teams and architectural decisions in banking domain"
+      title: "Japan PR Holder",
+      description: "No visa sponsorship required for Tokyo-based projects"
     }
   ];
 
