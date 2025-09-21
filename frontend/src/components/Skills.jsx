@@ -1,10 +1,30 @@
-import React from 'react';
-import { Code, Database, Cloud, Settings, BarChart3, Workflow } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Code, Database, Cloud, Settings, BarChart3, Workflow, Loader2 } from 'lucide-react';
 import { Card } from './ui/card';
 import { Progress } from './ui/progress';
-import { skills } from '../data/mock';
+import { apiService } from '../services/api';
 
 const Skills = () => {
+  const [skills, setSkills] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const data = await apiService.getSkills();
+        setSkills(data);
+      } catch (err) {
+        setError('Failed to load skills data');
+        console.error('Error loading skills:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSkills();
+  }, []);
+
   const skillCategories = {
     "Backend": { icon: <Code className="text-blue-600" size={24} />, color: "blue" },
     "Framework": { icon: <Settings className="text-green-600" size={24} />, color: "green" },
@@ -15,6 +35,27 @@ const Skills = () => {
     "Data": { icon: <Database className="text-indigo-600" size={24} />, color: "indigo" },
     "Emerging Tech": { icon: <Settings className="text-pink-600" size={24} />, color: "pink" }
   };
+
+  if (loading) {
+    return (
+      <section id="skills" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <Loader2 className="animate-spin text-blue-600 mx-auto mb-4" size={48} />
+          <p className="text-gray-600">Loading skills...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error || !skills.length) {
+    return (
+      <section id="skills" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-red-600">{error || 'Failed to load skills'}</p>
+        </div>
+      </section>
+    );
+  }
 
   const groupedSkills = skills.reduce((acc, skill) => {
     if (!acc[skill.category]) {

@@ -1,9 +1,29 @@
-import React from 'react';
-import { User, Award, Calendar, TrendingUp } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { User, Award, Calendar, TrendingUp, Loader2 } from 'lucide-react';
 import { Card } from './ui/card';
-import { profileData } from '../data/mock';
+import { apiService } from '../services/api';
 
 const About = () => {
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await apiService.getProfile();
+        setProfileData(data);
+      } catch (err) {
+        setError('Failed to load profile data');
+        console.error('Error loading profile:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   const highlights = [
     {
       icon: <Calendar className="text-blue-600" size={24} />,
@@ -26,6 +46,27 @@ const About = () => {
       description: "Leading teams and architectural decisions in banking domain"
     }
   ];
+
+  if (loading) {
+    return (
+      <section id="about" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <Loader2 className="animate-spin text-blue-600 mx-auto mb-4" size={48} />
+          <p className="text-gray-600">Loading about information...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error || !profileData) {
+    return (
+      <section id="about" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-red-600">{error || 'Failed to load about information'}</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="about" className="py-20 bg-white">

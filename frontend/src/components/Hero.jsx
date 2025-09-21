@@ -1,12 +1,54 @@
-import React from 'react';
-import { ChevronDown, MapPin, Building2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronDown, MapPin, Building2, Loader2 } from 'lucide-react';
 import { Button } from './ui/button';
-import { profileData } from '../data/mock';
+import { apiService } from '../services/api';
 
 const Hero = () => {
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await apiService.getProfile();
+        setProfileData(data);
+      } catch (err) {
+        setError('Failed to load profile data');
+        console.error('Error loading profile:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   const scrollToAbout = () => {
     document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  if (loading) {
+    return (
+      <section className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="animate-spin text-blue-600 mx-auto mb-4" size={48} />
+          <p className="text-gray-600">Loading profile...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error || !profileData) {
+    return (
+      <section className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error || 'Failed to load profile'}</p>
+          <Button onClick={() => window.location.reload()}>Retry</Button>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">

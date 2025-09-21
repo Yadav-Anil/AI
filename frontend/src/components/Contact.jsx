@@ -1,28 +1,59 @@
-import React, { useState } from 'react';
-import { Mail, Linkedin, ExternalLink, Send, MapPin, User, MessageSquare } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Mail, Linkedin, ExternalLink, Send, MapPin, User, MessageSquare, Loader2 } from 'lucide-react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { useToast } from '../hooks/use-toast';
-import { profileData } from '../data/mock';
+import { apiService } from '../services/api';
 
 const Contact = () => {
   const { toast } = useToast();
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     message: ''
   });
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await apiService.getProfile();
+        setProfileData(data);
+      } catch (err) {
+        console.error('Error loading profile:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Mock form submission
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for your message. I'll get back to you soon.",
-    });
-    setFormData({ name: '', email: '', message: '' });
+    setSubmitting(true);
+
+    try {
+      await apiService.submitContactForm(formData);
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for your message. I'll get back to you soon.",
+      });
+      setFormData({ name: '', email: '', message: '' });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again.",
+        variant: "destructive",
+      });
+      console.error('Error submitting contact form:', error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -30,6 +61,33 @@ const Contact = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  if (loading) {
+    return (
+      <section id="contact" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <Loader2 className="animate-spin text-blue-600 mx-auto mb-4" size={48} />
+          <p className="text-gray-600">Loading contact information...</p>
+        </div>
+      </section>
+    );
+  }
+
+  // Use fallback data if profile fails to load
+  const contactData = profileData || {
+    name: "Anil Yadav",
+    title: "Senior Technical Lead",
+    company: "Nucleus Software Japan K.K.",
+    location: "Tokyo, Japan",
+    contact: {
+      email: "anilyadav83@gmail.com",
+      linkedin: "www.linkedin.com/in/anil-yadav-a1223211",
+      blogs: [
+        { name: "SQL Server Team Blog", url: "sqlserverteam.blogspot.com/" },
+        { name: "Personal Tech Blog", url: "anil83.blogspot.com/" }
+      ]
+    }
   };
 
   return (
@@ -54,13 +112,13 @@ const Contact = () => {
                 <div className="w-24 h-24 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <User size={40} className="text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{profileData.name}</h3>
-                <p className="text-lg text-blue-600 font-semibold">{profileData.title}</p>
-                <p className="text-gray-600">{profileData.company}</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">{contactData.name}</h3>
+                <p className="text-lg text-blue-600 font-semibold">{contactData.title}</p>
+                <p className="text-gray-600">{contactData.company}</p>
                 
                 <div className="flex items-center justify-center gap-2 mt-3 text-gray-600">
                   <MapPin size={16} />
-                  <span>{profileData.location}</span>
+                  <span>{contactData.location}</span>
                 </div>
               </div>
             </Card>
@@ -78,10 +136,10 @@ const Contact = () => {
                   <div className="flex-grow">
                     <h4 className="text-lg font-semibold text-gray-900">Email</h4>
                     <a 
-                      href={`mailto:${profileData.contact.email}`}
+                      href={`mailto:${contactData.contact.email}`}
                       className="text-blue-600 hover:text-blue-700 transition-colors"
                     >
-                      {profileData.contact.email}
+                      {contactData.contact.email}
                     </a>
                   </div>
                   <ExternalLink size={20} className="text-gray-400" />
@@ -97,7 +155,7 @@ const Contact = () => {
                   <div className="flex-grow">
                     <h4 className="text-lg font-semibold text-gray-900">LinkedIn</h4>
                     <a 
-                      href={`https://${profileData.contact.linkedin}`}
+                      href={`https://${contactData.contact.linkedin}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:text-blue-700 transition-colors"
@@ -112,7 +170,7 @@ const Contact = () => {
               {/* Blogs */}
               <div className="space-y-3">
                 <h4 className="text-lg font-semibold text-gray-900">Technical Blogs</h4>
-                {profileData.contact.blogs.map((blog, index) => (
+                {contactData.contact.blogs?.map((blog, index) => (
                   <Card key={index} className="p-4 hover:shadow-md transition-all duration-300 border border-gray-200">
                     <div className="flex items-center space-x-3">
                       <div className="p-2 bg-purple-50 rounded-lg">
@@ -163,6 +221,7 @@ const Contact = () => {
                   onChange={handleInputChange}
                   placeholder="Enter your full name"
                   className="w-full"
+                  disabled={submitting}
                 />
               </div>
 
@@ -179,6 +238,7 @@ const Contact = () => {
                   onChange={handleInputChange}
                   placeholder="Enter your email address"
                   className="w-full"
+                  disabled={submitting}
                 />
               </div>
 
@@ -195,15 +255,26 @@ const Contact = () => {
                   placeholder="Tell me about your project, question, or just say hello..."
                   rows={6}
                   className="w-full"
+                  disabled={submitting}
                 />
               </div>
 
               <Button 
                 type="submit" 
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 text-lg rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                disabled={submitting}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 text-lg rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
-                <Send className="mr-2" size={20} />
-                Send Message
+                {submitting ? (
+                  <>
+                    <Loader2 className="mr-2 animate-spin" size={20} />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="mr-2" size={20} />
+                    Send Message
+                  </>
+                )}
               </Button>
             </form>
           </Card>
@@ -219,7 +290,7 @@ const Contact = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
-                onClick={() => window.open(`mailto:${profileData.contact.email}`, '_blank')}
+                onClick={() => window.open(`mailto:${contactData.contact.email}`, '_blank')}
                 variant="secondary"
                 size="lg"
                 className="bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8 py-3"
@@ -228,7 +299,7 @@ const Contact = () => {
                 Email Me Directly
               </Button>
               <Button 
-                onClick={() => window.open(`https://${profileData.contact.linkedin}`, '_blank')}
+                onClick={() => window.open(`https://${contactData.contact.linkedin}`, '_blank')}
                 variant="outline"
                 size="lg"
                 className="border-white text-white hover:bg-white hover:text-blue-600 font-semibold px-8 py-3"
