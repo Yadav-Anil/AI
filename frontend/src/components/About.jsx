@@ -145,12 +145,12 @@ const About = () => {
         {/* Additional Info */}
         <div className="mt-16 text-center">
           <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-8 rounded-2xl shadow-xl">
-            <h3 className="text-2xl font-bold mb-4">Why I Love Technology</h3>
+            <h3 className="text-2xl font-bold mb-4">Cloud Infrastructure & AI Solutions Expert</h3>
             <p className="text-lg leading-relaxed max-w-4xl mx-auto">
-              Technology has the power to transform businesses and improve lives. With over 16 years of experience, 
-              I've witnessed the evolution from traditional systems to cloud-native architectures. My passion lies in 
-              bridging the gap between emerging technologies and practical business solutions, particularly in the 
-              financial services domain.
+              With 16+ years of experience, I specialize in helping companies in India and Tokyo build scalable cloud 
+              infrastructure and implement AI-powered solutions. From legacy system migrations to cutting-edge AI 
+              implementations, I bridge the gap between complex technology and practical business outcomes. 
+              Currently available for consulting projects with no visa restrictions.
             </p>
           </div>
         </div>
