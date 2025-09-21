@@ -109,9 +109,17 @@ const Contact = () => {
             {/* Profile Card */}
             <Card className="p-8 bg-white border border-gray-200">
               <div className="text-center mb-6">
-                <div className="w-24 h-24 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <User size={40} className="text-white" />
-                </div>
+                {contactData.profileImage ? (
+                  <img
+                    src={contactData.profileImage}
+                    alt={contactData.name}
+                    className="w-24 h-24 rounded-full mx-auto mb-4 shadow-lg border-2 border-blue-100"
+                  />
+                ) : (
+                  <div className="w-24 h-24 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <User size={40} className="text-white" />
+                  </div>
+                )}
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{contactData.name}</h3>
                 <p className="text-lg text-blue-600 font-semibold">{contactData.title}</p>
                 <p className="text-gray-600">{contactData.company}</p>
@@ -120,6 +128,14 @@ const Contact = () => {
                   <MapPin size={16} />
                   <span>{contactData.location}</span>
                 </div>
+                
+                {contactData.consulting?.available && (
+                  <div className="mt-4">
+                    <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                      🟢 Available for Consulting
+                    </span>
+                  </div>
+                )}
               </div>
             </Card>
 
