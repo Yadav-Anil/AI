@@ -99,6 +99,22 @@ const About = () => {
                 team leadership, and innovative technology adoption.
               </p>
             </div>
+
+            {/* Consulting Availability */}
+            {profileData.consulting?.available && (
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200">
+                <h4 className="text-xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+                  Available for Consulting
+                </h4>
+                <p className="text-gray-700 mb-3">
+                  {profileData.consulting.visaStatus}
+                </p>
+                <div className="text-sm text-gray-600">
+                  <strong>Target Markets:</strong> {profileData.consulting.targetMarkets?.join(', ')}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Highlights Grid */}
