@@ -61,12 +61,28 @@ const Hero = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 pt-20">
         <div className="mb-8 animate-fade-in">
+          {/* Profile Image */}
+          {profileData.profileImage && (
+            <div className="mb-8">
+              <img
+                src={profileData.profileImage}
+                alt={profileData.name}
+                className="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto shadow-2xl border-4 border-white/20"
+              />
+            </div>
+          )}
+          
           <div className="flex items-center justify-center gap-2 text-blue-600 mb-4">
             <MapPin size={20} />
             <span className="text-lg font-medium">{profileData.location}</span>
+            {profileData.consulting?.visaStatus && (
+              <span className="text-sm bg-green-100 text-green-800 px-3 py-1 rounded-full font-medium ml-2">
+                Japan PR Holder
+              </span>
+            )}
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-4 leading-tight">
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4 leading-tight">
             {profileData.name}
           </h1>
           
@@ -77,6 +93,14 @@ const Hero = () => {
             </p>
           </div>
           
+          {profileData.consulting?.available && (
+            <div className="mb-4">
+              <span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-full text-lg font-semibold shadow-lg">
+                🔥 Available for Consulting
+              </span>
+            </div>
+          )}
+          
           <p className="text-lg md:text-xl text-gray-600 mb-2">
             at {profileData.company}
           </p>
@@ -84,6 +108,22 @@ const Hero = () => {
           <p className="text-xl md:text-2xl text-blue-700 font-semibold max-w-4xl mx-auto leading-relaxed">
             {profileData.tagline}
           </p>
+          
+          {profileData.consulting?.specializations && (
+            <div className="mt-6">
+              <p className="text-gray-600 mb-3">Specializing in:</p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {profileData.consulting.specializations.map((spec, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium"
+                  >
+                    {spec}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 animate-fade-in-delay">
