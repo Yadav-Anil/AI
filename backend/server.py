@@ -115,6 +115,129 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
+# Portfolio API Endpoints
+@api_router.get("/profile", response_model=APIResponse)
+async def get_profile():
+    try:
+        profile = await db.profiles.find_one()
+        if not profile:
+            raise HTTPException(status_code=404, detail="Profile not found")
+        
+        # Remove MongoDB _id field
+        profile.pop('_id', None)
+        return APIResponse(success=True, data=profile, message="Profile retrieved successfully")
+    except Exception as e:
+        logging.error(f"Error retrieving profile: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@api_router.get("/skills", response_model=APIResponse)
+async def get_skills():
+    try:
+        skills_doc = await db.skills.find_one()
+        if not skills_doc:
+            raise HTTPException(status_code=404, detail="Skills not found")
+        
+        skills = skills_doc.get('skills', [])
+        return APIResponse(success=True, data=skills, message="Skills retrieved successfully")
+    except Exception as e:
+        logging.error(f"Error retrieving skills: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@api_router.get("/certifications", response_model=APIResponse)
+async def get_certifications():
+    try:
+        cert_doc = await db.certifications.find_one()
+        if not cert_doc:
+            raise HTTPException(status_code=404, detail="Certifications not found")
+        
+        certifications = cert_doc.get('certifications', [])
+        return APIResponse(success=True, data=certifications, message="Certifications retrieved successfully")
+    except Exception as e:
+        logging.error(f"Error retrieving certifications: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@api_router.get("/experience", response_model=APIResponse)
+async def get_experience():
+    try:
+        exp_doc = await db.experience.find_one()
+        if not exp_doc:
+            raise HTTPException(status_code=404, detail="Experience not found")
+        
+        experience = exp_doc.get('experience', [])
+        return APIResponse(success=True, data=experience, message="Experience retrieved successfully")
+    except Exception as e:
+        logging.error(f"Error retrieving experience: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@api_router.get("/projects", response_model=APIResponse)
+async def get_projects():
+    try:
+        proj_doc = await db.projects.find_one()
+        if not proj_doc:
+            raise HTTPException(status_code=404, detail="Projects not found")
+        
+        projects = proj_doc.get('projects', [])
+        return APIResponse(success=True, data=projects, message="Projects retrieved successfully")
+    except Exception as e:
+        logging.error(f"Error retrieving projects: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@api_router.get("/education", response_model=APIResponse)
+async def get_education():
+    try:
+        education = await db.education.find_one()
+        if not education:
+            raise HTTPException(status_code=404, detail="Education not found")
+        
+        # Remove MongoDB _id field
+        education.pop('_id', None)
+        return APIResponse(success=True, data=education, message="Education retrieved successfully")
+    except Exception as e:
+        logging.error(f"Error retrieving education: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@api_router.post("/contact", response_model=APIResponse)
+async def submit_contact_message(contact_data: ContactMessageCreate):
+    try:
+        message_obj = ContactMessage(**contact_data.dict())
+        result = await db.contact_messages.insert_one(message_obj.dict())
+        
+        if result.inserted_id:
+            return APIResponse(
+                success=True, 
+                data={"id": message_obj.id}, 
+                message="Message sent successfully! I'll get back to you soon."
+            )
+        else:
+            raise HTTPException(status_code=500, detail="Failed to save message")
+            
+    except Exception as e:
+        logging.error(f"Error saving contact message: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@api_router.get("/contact/messages", response_model=APIResponse)
+async def get_contact_messages():
+    try:
+        messages = await db.contact_messages.find().sort("timestamp", -1).to_list(100)
+        # Remove MongoDB _id fields
+        for message in messages:
+            message.pop('_id', None)
+        
+        return APIResponse(success=True, data=messages, message="Messages retrieved successfully")
+    except Exception as e:
+        logging.error(f"Error retrieving contact messages: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+# Database seeding endpoint (for initial setup)
+@api_router.post("/seed-database", response_model=APIResponse)
+async def seed_database():
+    try:
+        # This will be used to populate the database with initial data
+        return APIResponse(success=True, data=None, message="Database seeding endpoint ready")
+    except Exception as e:
+        logging.error(f"Error seeding database: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
 # Include the router in the main app
 app.include_router(api_router)
 
