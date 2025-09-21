@@ -299,10 +299,11 @@ const Contact = () => {
         {/* CTA Section */}
         <div className="mt-16 text-center">
           <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-10 rounded-2xl shadow-xl">
-            <h3 className="text-3xl font-bold mb-4">Ready to Collaborate?</h3>
+            <h3 className="text-3xl font-bold mb-4">Ready to Scale Your Cloud Infrastructure?</h3>
             <p className="text-xl leading-relaxed max-w-3xl mx-auto mb-8">
-              Whether you're looking for technical leadership, system architecture consultation, 
-              or innovative solutions for your next project, I'm here to help turn your ideas into reality.
+              Looking for expert guidance on cloud infrastructure, AI-based software solutions, or system architecture? 
+              I help companies in India and Tokyo build scalable, future-ready technology solutions. 
+              Let's discuss how I can help accelerate your digital transformation.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
@@ -312,7 +313,7 @@ const Contact = () => {
                 className="bg-white text-blue-600 hover:bg-gray-100 font-semibold px-8 py-3"
               >
                 <Mail className="mr-2" size={20} />
-                Email Me Directly
+                Discuss Your Project
               </Button>
               <Button 
                 onClick={() => window.open(`https://${contactData.contact.linkedin}`, '_blank')}
