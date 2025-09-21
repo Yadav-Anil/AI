@@ -1,11 +1,31 @@
-import React from 'react';
-import { ExternalLink, Code, CheckCircle, Clock, TrendingUp } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ExternalLink, Code, CheckCircle, Clock, TrendingUp, Loader2 } from 'lucide-react';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { projects } from '../data/mock';
+import { apiService } from '../services/api';
 
 const Projects = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const data = await apiService.getProjects();
+        setProjects(data);
+      } catch (err) {
+        setError('Failed to load projects data');
+        console.error('Error loading projects:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
   const statusIcons = {
     "Production": <CheckCircle className="text-green-600" size={20} />,
     "Completed": <CheckCircle className="text-blue-600" size={20} />,
@@ -17,6 +37,27 @@ const Projects = () => {
     "Completed": "bg-blue-100 text-blue-800 border-blue-200",
     "In Progress": "bg-orange-100 text-orange-800 border-orange-200"
   };
+
+  if (loading) {
+    return (
+      <section id="projects" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <Loader2 className="animate-spin text-blue-600 mx-auto mb-4" size={48} />
+          <p className="text-gray-600">Loading projects...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error || !projects.length) {
+    return (
+      <section id="projects" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-red-600">{error || 'Failed to load projects'}</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="projects" className="py-20 bg-white">
@@ -114,7 +155,7 @@ const Projects = () => {
             
             <div className="grid md:grid-cols-4 gap-8">
               <div className="bg-white/10 p-6 rounded-xl">
-                <div className="text-3xl font-bold mb-2">4</div>
+                <div className="text-3xl font-bold mb-2">{projects.length}</div>
                 <div className="text-blue-100">Major Projects</div>
               </div>
               <div className="bg-white/10 p-6 rounded-xl">

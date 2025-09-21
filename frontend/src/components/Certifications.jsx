@@ -1,10 +1,30 @@
-import React from 'react';
-import { Award, Calendar, Shield, Trophy } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Award, Calendar, Shield, Trophy, Loader2 } from 'lucide-react';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
-import { certifications } from '../data/mock';
+import { apiService } from '../services/api';
 
 const Certifications = () => {
+  const [certifications, setCertifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchCertifications = async () => {
+      try {
+        const data = await apiService.getCertifications();
+        setCertifications(data);
+      } catch (err) {
+        setError('Failed to load certifications data');
+        console.error('Error loading certifications:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCertifications();
+  }, []);
+
   const certificationIcons = {
     "Cloud Architecture": <Shield className="text-blue-600" size={28} />,
     "Cloud Development": <Trophy className="text-green-600" size={28} />,
@@ -16,6 +36,27 @@ const Certifications = () => {
     "Cloud Development": "bg-green-100 text-green-800 border-green-200",
     "Blockchain Technology": "bg-purple-100 text-purple-800 border-purple-200"
   };
+
+  if (loading) {
+    return (
+      <section id="certifications" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <Loader2 className="animate-spin text-blue-600 mx-auto mb-4" size={48} />
+          <p className="text-gray-600">Loading certifications...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error || !certifications.length) {
+    return (
+      <section id="certifications" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-red-600">{error || 'Failed to load certifications'}</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="certifications" className="py-20 bg-white">

@@ -1,10 +1,51 @@
-import React from 'react';
-import { Building2, Calendar, MapPin, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Building2, Calendar, MapPin, ChevronRight, Loader2 } from 'lucide-react';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
-import { experience } from '../data/mock';
+import { apiService } from '../services/api';
 
 const Experience = () => {
+  const [experience, setExperience] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchExperience = async () => {
+      try {
+        const data = await apiService.getExperience();
+        setExperience(data);
+      } catch (err) {
+        setError('Failed to load experience data');
+        console.error('Error loading experience:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExperience();
+  }, []);
+
+  if (loading) {
+    return (
+      <section id="experience" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <Loader2 className="animate-spin text-blue-600 mx-auto mb-4" size={48} />
+          <p className="text-gray-600">Loading experience...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error || !experience.length) {
+    return (
+      <section id="experience" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-red-600">{error || 'Failed to load experience'}</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="experience" className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -107,7 +148,7 @@ const Experience = () => {
           
           <div className="grid md:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">5</div>
+              <div className="text-3xl font-bold text-blue-600 mb-2">{experience.length}</div>
               <div className="text-gray-600">Different Companies</div>
             </div>
             <div className="text-center">

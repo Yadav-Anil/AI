@@ -1,9 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Heart, Code, Coffee } from 'lucide-react';
-import { profileData } from '../data/mock';
+import { apiService } from '../services/api';
 
 const Footer = () => {
+  const [profileData, setProfileData] = useState(null);
   const currentYear = new Date().getFullYear();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await apiService.getProfile();
+        setProfileData(data);
+      } catch (err) {
+        console.error('Error loading profile for footer:', err);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  // Use fallback data if profile fails to load
+  const footerData = profileData || {
+    name: "Anil Yadav",
+    title: "Senior Technical Lead",
+    contact: {
+      email: "anilyadav83@gmail.com",
+      linkedin: "www.linkedin.com/in/anil-yadav-a1223211",
+      blogs: [
+        { name: "SQL Server Team Blog", url: "sqlserverteam.blogspot.com/" },
+        { name: "Personal Tech Blog", url: "anil83.blogspot.com/" }
+      ]
+    }
+  };
 
   return (
     <footer className="bg-gray-900 text-white py-12">
@@ -11,9 +39,9 @@ const Footer = () => {
         <div className="grid md:grid-cols-3 gap-8 mb-8">
           {/* Brand */}
           <div>
-            <h3 className="text-2xl font-bold mb-4">{profileData.name}</h3>
+            <h3 className="text-2xl font-bold mb-4">{footerData.name}</h3>
             <p className="text-gray-300 leading-relaxed">
-              {profileData.title} passionate about leveraging technology to solve complex business challenges.
+              {footerData.title} passionate about leveraging technology to solve complex business challenges.
             </p>
           </div>
 
@@ -46,15 +74,15 @@ const Footer = () => {
             <div className="space-y-3">
               <div>
                 <a
-                  href={`mailto:${profileData.contact.email}`}
+                  href={`mailto:${footerData.contact.email}`}
                   className="text-gray-300 hover:text-blue-400 transition-colors duration-200"
                 >
-                  {profileData.contact.email}
+                  {footerData.contact.email}
                 </a>
               </div>
               <div>
                 <a
-                  href={`https://${profileData.contact.linkedin}`}
+                  href={`https://${footerData.contact.linkedin}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-300 hover:text-blue-400 transition-colors duration-200"
@@ -64,7 +92,7 @@ const Footer = () => {
               </div>
               <div className="space-y-1">
                 <p className="text-sm text-gray-400">Technical Blogs:</p>
-                {profileData.contact.blogs.map((blog, index) => (
+                {footerData.contact.blogs?.map((blog, index) => (
                   <div key={index}>
                     <a
                       href={`https://${blog.url}`}
@@ -85,7 +113,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-2 text-gray-300 mb-4 md:mb-0">
-              <span>© {currentYear} {profileData.name}. Made with</span>
+              <span>© {currentYear} {footerData.name}. Made with</span>
               <Heart size={16} className="text-red-500" />
               <span>and</span>
               <Code size={16} className="text-blue-400" />
