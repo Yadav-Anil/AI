@@ -45,16 +45,23 @@ PROFILE_DATA = {
 
 SKILLS_DATA = {
     "skills": [
+        {"name": "Microsoft Azure", "level": 95, "category": "Cloud"},
+        {"name": "AWS", "level": 90, "category": "Cloud"},
+        {"name": "Google Cloud Platform", "level": 85, "category": "Cloud"},
+        {"name": "Kubernetes", "level": 90, "category": "Cloud"},
+        {"name": "Docker", "level": 92, "category": "Cloud"},
+        {"name": "Machine Learning", "level": 85, "category": "AI"},
+        {"name": "TensorFlow", "level": 80, "category": "AI"},
+        {"name": "AI Architecture", "level": 88, "category": "AI"},
         {"name": "Web Services", "level": 95, "category": "Backend"},
         {"name": "WCF", "level": 90, "category": "Framework"},
-        {"name": "XML", "level": 90, "category": "Data"},
         {"name": "Oracle Database", "level": 95, "category": "Database"},
         {"name": "PL/SQL", "level": 92, "category": "Database"},
         {"name": "Requirements Analysis", "level": 95, "category": "Analysis"},
         {"name": "Agile Methodologies", "level": 90, "category": "Process"},
         {"name": "SDLC", "level": 95, "category": "Process"},
-        {"name": "Microsoft Azure", "level": 85, "category": "Cloud"},
-        {"name": "AWS", "level": 80, "category": "Cloud"},
+        {"name": "Enterprise Architecture", "level": 93, "category": "Architecture"},
+        {"name": "System Migration", "level": 90, "category": "Architecture"},
         {"name": "Blockchain", "level": 75, "category": "Emerging Tech"}
     ]
 }
