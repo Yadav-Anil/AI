@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -6,7 +6,7 @@ import os
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional, Dict, Any
 import uuid
 from datetime import datetime
 
@@ -34,6 +34,69 @@ class StatusCheck(BaseModel):
 
 class StatusCheckCreate(BaseModel):
     client_name: str
+
+# Portfolio Models
+class ProfileData(BaseModel):
+    name: str
+    title: str
+    company: str
+    location: str
+    tagline: str
+    summary: str
+    contact: Dict[str, Any]
+
+class Skill(BaseModel):
+    name: str
+    level: int
+    category: str
+
+class Certification(BaseModel):
+    id: int
+    name: str
+    issuer: str
+    year: str
+    type: str
+
+class Experience(BaseModel):
+    id: int
+    company: str
+    position: str
+    duration: str
+    period: str
+    description: str
+    technologies: List[str]
+
+class Project(BaseModel):
+    id: int
+    title: str
+    description: str
+    technologies: List[str]
+    status: str
+    impact: str
+
+class Education(BaseModel):
+    degree: str
+    institution: str
+    duration: str
+    description: str
+
+class ContactMessage(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    email: str
+    message: str
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    status: str = Field(default="new")
+
+class ContactMessageCreate(BaseModel):
+    name: str
+    email: str
+    message: str
+
+class APIResponse(BaseModel):
+    success: bool
+    data: Optional[Any] = None
+    message: str
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
