@@ -333,7 +333,12 @@ const Dashboard = ({ user, onLogout }) => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+          <Card 
+            className={`bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 cursor-pointer transition-all duration-200 hover:shadow-lg transform hover:scale-[1.02] ${
+              filterStatus === 'all' ? 'ring-2 ring-blue-400' : ''
+            }`}
+            onClick={() => setFilterStatus('all')}
+          >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -347,7 +352,12 @@ const Dashboard = ({ user, onLogout }) => {
             </CardContent>
           </Card>
           
-          <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+          <Card 
+            className={`bg-gradient-to-br from-green-50 to-green-100 border-green-200 cursor-pointer transition-all duration-200 hover:shadow-lg transform hover:scale-[1.02] ${
+              filterStatus === 'completed' ? 'ring-2 ring-green-400' : ''
+            }`}
+            onClick={() => setFilterStatus('completed')}
+          >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -361,7 +371,12 @@ const Dashboard = ({ user, onLogout }) => {
             </CardContent>
           </Card>
           
-          <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+          <Card 
+            className={`bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200 cursor-pointer transition-all duration-200 hover:shadow-lg transform hover:scale-[1.02] ${
+              filterStatus === 'pending' ? 'ring-2 ring-orange-400' : ''
+            }`}
+            onClick={() => setFilterStatus('pending')}
+          >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -375,7 +390,12 @@ const Dashboard = ({ user, onLogout }) => {
             </CardContent>
           </Card>
           
-          <Card className="bg-gradient-to-br from-red-50 to-red-100 border-red-200">
+          <Card 
+            className={`bg-gradient-to-br from-red-50 to-red-100 border-red-200 cursor-pointer transition-all duration-200 hover:shadow-lg transform hover:scale-[1.02] ${
+              filterStatus === 'overdue' ? 'ring-2 ring-red-400' : ''
+            }`}
+            onClick={() => setFilterStatus('overdue')}
+          >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
