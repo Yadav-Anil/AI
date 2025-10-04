@@ -158,6 +158,10 @@ async def update_task(
     if update_data:
         update_data["updated_at"] = datetime.utcnow()
         
+        # Convert date to datetime for MongoDB compatibility
+        if 'due_date' in update_data and isinstance(update_data['due_date'], date):
+            update_data['due_date'] = datetime.combine(update_data['due_date'], datetime.min.time())
+        
         # Update task in database
         await db.tasks.update_one(
             {"id": task_id, "user_id": current_user_id},
