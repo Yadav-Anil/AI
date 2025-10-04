@@ -12,7 +12,7 @@ import {
   Briefcase, Heart, ShoppingBag, Book, UserIcon, Download
 } from 'lucide-react';
 import TaskForm from './TaskForm';
-import { mockAPI, mockCategories } from '../mock';
+import { tasksAPI, categoriesAPI } from '../services/api';
 import { useToast } from '../hooks/use-toast';
 
 const Dashboard = ({ user, onLogout }) => {
