@@ -13,8 +13,8 @@ const AuthPage = ({ onLogin }) => {
   const { toast } = useToast();
 
   const [loginForm, setLoginForm] = useState({
-    email: 'demo@example.com',
-    password: 'demo123'
+    email: '',
+    password: ''
   });
 
   const [registerForm, setRegisterForm] = useState({
