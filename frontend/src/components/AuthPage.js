@@ -154,9 +154,8 @@ const AuthPage = ({ onLogin }) => {
                   </Button>
                 </form>
                 <div className="text-center text-sm text-gray-600 mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                  <strong>Demo Account:</strong><br />
-                  Email: demo@example.com<br />
-                  Password: demo123
+                  <strong>Demo Mode:</strong><br />
+                  Create a new account to get started with your personal TaskFlow workspace
                 </div>
               </TabsContent>
 
