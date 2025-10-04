@@ -151,6 +151,8 @@ export const mockAPI = {
         const taskIndex = mockTasks.findIndex(t => t.id === taskId);
         if (taskIndex !== -1) {
           mockTasks[taskIndex] = { ...mockTasks[taskIndex], ...updates };
+          // Store in localStorage for persistence
+          localStorage.setItem('todoApp_tasks', JSON.stringify(mockTasks));
           resolve(mockTasks[taskIndex]);
         }
       }, 500);
@@ -163,6 +165,8 @@ export const mockAPI = {
         const taskIndex = mockTasks.findIndex(t => t.id === taskId);
         if (taskIndex !== -1) {
           mockTasks.splice(taskIndex, 1);
+          // Store in localStorage for persistence
+          localStorage.setItem('todoApp_tasks', JSON.stringify(mockTasks));
           resolve(true);
         }
       }, 500);
