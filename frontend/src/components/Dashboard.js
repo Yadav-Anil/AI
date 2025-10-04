@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { 
   CheckCircle, Plus, User, LogOut, Search, Filter, 
   Calendar, Flag, Tag, Edit2, Trash2, Clock, 
-  Briefcase, Heart, ShoppingBag, Book, UserIcon
+  Briefcase, Heart, ShoppingBag, Book, UserIcon, Download
 } from 'lucide-react';
 import TaskForm from './TaskForm';
 import { mockAPI, mockCategories } from '../mock';
