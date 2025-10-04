@@ -453,6 +453,188 @@ def test_tasks(auth_results, category_results):
     
     return results
 
+def test_password_reset():
+    """Test password reset functionality"""
+    results = TestResults()
+    
+    # Create a test user with unique email
+    import time
+    timestamp = str(int(time.time()))
+    test_user = {
+        "name": "Reset Test User",
+        "email": f"resettest.{timestamp}@example.com",
+        "password": "originalpassword123"
+    }
+    
+    # Register the test user
+    try:
+        response = requests.post(f"{API_URL}/auth/register", json=test_user, timeout=10)
+        if response.status_code != 200:
+            results.log_failure("Password reset setup", f"Failed to register user: {response.status_code}")
+            return results
+    except Exception as e:
+        results.log_failure("Password reset setup", f"Registration error: {str(e)}")
+        return results
+    
+    # Test 1: Request password reset with valid email
+    try:
+        reset_request = {"email": test_user["email"]}
+        response = requests.post(f"{API_URL}/auth/forgot-password", json=reset_request, timeout=10)
+        if response.status_code == 200:
+            data = response.json()
+            if "demo_reset_code" in data and data["success"]:
+                results.log_success("Request password reset - valid email")
+                reset_code = data["demo_reset_code"]
+            else:
+                results.log_failure("Request password reset - valid email", "Missing reset code in response")
+                return results
+        else:
+            results.log_failure("Request password reset - valid email", f"Status: {response.status_code}")
+            return results
+    except Exception as e:
+        results.log_failure("Request password reset - valid email", str(e))
+        return results
+    
+    # Test 2: Request password reset with non-existent email (should not reveal if account exists)
+    try:
+        fake_request = {"email": f"nonexistent.{timestamp}@example.com"}
+        response = requests.post(f"{API_URL}/auth/forgot-password", json=fake_request, timeout=10)
+        if response.status_code == 200:
+            data = response.json()
+            if data["success"] and "demo_reset_code" not in data:
+                results.log_success("Request password reset - non-existent email")
+            else:
+                results.log_failure("Request password reset - non-existent email", "Should not reveal account existence")
+        else:
+            results.log_failure("Request password reset - non-existent email", f"Status: {response.status_code}")
+    except Exception as e:
+        results.log_failure("Request password reset - non-existent email", str(e))
+    
+    # Test 3: Test invalid email format
+    try:
+        invalid_request = {"email": "invalid-email-format"}
+        response = requests.post(f"{API_URL}/auth/forgot-password", json=invalid_request, timeout=10)
+        if response.status_code == 422:  # Validation error
+            results.log_success("Request password reset - invalid email format")
+        else:
+            results.log_failure("Request password reset - invalid email format", f"Expected 422, got {response.status_code}")
+    except Exception as e:
+        results.log_failure("Request password reset - invalid email format", str(e))
+    
+    # Test 4: Reset password with valid code
+    new_password = "newpassword456"
+    try:
+        reset_confirm = {
+            "email": test_user["email"],
+            "reset_code": reset_code,
+            "new_password": new_password
+        }
+        response = requests.post(f"{API_URL}/auth/reset-password", json=reset_confirm, timeout=10)
+        if response.status_code == 200:
+            data = response.json()
+            if data["success"]:
+                results.log_success("Reset password - valid code")
+            else:
+                results.log_failure("Reset password - valid code", "Success flag not set")
+        else:
+            results.log_failure("Reset password - valid code", f"Status: {response.status_code}, Response: {response.text}")
+            return results
+    except Exception as e:
+        results.log_failure("Reset password - valid code", str(e))
+        return results
+    
+    # Test 5: Try to use the same reset code again (should fail)
+    try:
+        response = requests.post(f"{API_URL}/auth/reset-password", json=reset_confirm, timeout=10)
+        if response.status_code == 400:
+            results.log_success("Reset code single use enforcement")
+        else:
+            results.log_failure("Reset code single use enforcement", f"Expected 400, got {response.status_code}")
+    except Exception as e:
+        results.log_failure("Reset code single use enforcement", str(e))
+    
+    # Test 6: Test invalid reset code
+    try:
+        invalid_reset = {
+            "email": test_user["email"],
+            "reset_code": "999999",
+            "new_password": "anotherpassword"
+        }
+        response = requests.post(f"{API_URL}/auth/reset-password", json=invalid_reset, timeout=10)
+        if response.status_code == 400:
+            results.log_success("Reset password - invalid code")
+        else:
+            results.log_failure("Reset password - invalid code", f"Expected 400, got {response.status_code}")
+    except Exception as e:
+        results.log_failure("Reset password - invalid code", str(e))
+    
+    # Test 7: Verify login with new password works
+    try:
+        login_data = {
+            "email": test_user["email"],
+            "password": new_password
+        }
+        response = requests.post(f"{API_URL}/auth/login", json=login_data, timeout=10)
+        if response.status_code == 200:
+            data = response.json()
+            if "access_token" in data:
+                results.log_success("Login with new password")
+            else:
+                results.log_failure("Login with new password", "Missing access token")
+        else:
+            results.log_failure("Login with new password", f"Status: {response.status_code}")
+    except Exception as e:
+        results.log_failure("Login with new password", str(e))
+    
+    # Test 8: Verify old password no longer works
+    try:
+        old_login_data = {
+            "email": test_user["email"],
+            "password": test_user["password"]  # Original password
+        }
+        response = requests.post(f"{API_URL}/auth/login", json=old_login_data, timeout=10)
+        if response.status_code == 401:
+            results.log_success("Old password invalidated")
+        else:
+            results.log_failure("Old password invalidated", f"Expected 401, got {response.status_code}")
+    except Exception as e:
+        results.log_failure("Old password invalidated", str(e))
+    
+    # Test 9: Test empty fields
+    try:
+        empty_request = {"email": ""}
+        response = requests.post(f"{API_URL}/auth/forgot-password", json=empty_request, timeout=10)
+        if response.status_code == 422:  # Validation error
+            results.log_success("Empty email field validation")
+        else:
+            results.log_failure("Empty email field validation", f"Expected 422, got {response.status_code}")
+    except Exception as e:
+        results.log_failure("Empty email field validation", str(e))
+    
+    # Test 10: Test short password validation (if exists)
+    try:
+        # First get a new reset code
+        reset_request = {"email": test_user["email"]}
+        reset_response = requests.post(f"{API_URL}/auth/forgot-password", json=reset_request, timeout=10)
+        if reset_response.status_code == 200 and "demo_reset_code" in reset_response.json():
+            new_reset_code = reset_response.json()["demo_reset_code"]
+            
+            short_password_reset = {
+                "email": test_user["email"],
+                "reset_code": new_reset_code,
+                "new_password": "123"  # Very short password
+            }
+            response = requests.post(f"{API_URL}/auth/reset-password", json=short_password_reset, timeout=10)
+            # This might pass if no validation exists, which is okay for this test
+            if response.status_code in [200, 400, 422]:
+                results.log_success("Short password handling")
+            else:
+                results.log_failure("Short password handling", f"Unexpected status: {response.status_code}")
+    except Exception as e:
+        results.log_failure("Short password handling", str(e))
+    
+    return results
+
 def test_user_data_isolation():
     """Test that users can't access other users' data"""
     results = TestResults()
