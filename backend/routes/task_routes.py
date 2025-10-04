@@ -102,6 +102,10 @@ async def create_task(
     )
     
     task_dict = task.dict()
+    # Convert date to datetime for MongoDB compatibility
+    if isinstance(task_dict['due_date'], date):
+        task_dict['due_date'] = datetime.combine(task_dict['due_date'], datetime.min.time())
+    
     await db.tasks.insert_one(task_dict)
     
     return TaskResponse(
