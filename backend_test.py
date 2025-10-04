@@ -457,16 +457,18 @@ def test_user_data_isolation():
     """Test that users can't access other users' data"""
     results = TestResults()
     
-    # Create two different users
+    # Create two different users with unique emails
+    import time
+    timestamp = str(int(time.time()))
     user1_data = {
         "name": "User One",
-        "email": "user1@example.com",
+        "email": f"user1.{timestamp}@example.com",
         "password": "password123"
     }
     
     user2_data = {
         "name": "User Two", 
-        "email": "user2@example.com",
+        "email": f"user2.{timestamp}@example.com",
         "password": "password456"
     }
     
