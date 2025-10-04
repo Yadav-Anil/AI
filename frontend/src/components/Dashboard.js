@@ -34,15 +34,15 @@ const Dashboard = ({ user, onLogout }) => {
   const loadData = async () => {
     try {
       const [tasksData, categoriesData] = await Promise.all([
-        mockAPI.getTasks(),
-        mockAPI.getCategories()
+        tasksAPI.getAll(),
+        categoriesAPI.getAll()
       ]);
       setTasks(tasksData);
       setCategories(categoriesData);
     } catch (error) {
       toast({
         title: "Error loading data",
-        description: error.message,
+        description: error.response?.data?.detail || error.message,
         variant: "destructive"
       });
     } finally {
