@@ -67,6 +67,7 @@ const TaskForm = ({ task, categories, onSubmit, onCancel }) => {
     setIsSubmitting(true);
     try {
       await onSubmit(formData);
+      // Don't call onCancel here - let parent handle dialog closure
     } catch (error) {
       toast({
         title: "Error",
