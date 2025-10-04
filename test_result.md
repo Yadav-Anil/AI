@@ -165,6 +165,18 @@ backend:
         agent: "testing"
         comment: "Error handling working correctly. Invalid input data, non-existent resource IDs, duplicate registrations, and business logic constraints (category deletion with tasks) all properly handled with appropriate HTTP status codes."
 
+  - task: "Password Reset Functionality"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/auth_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Password reset functionality working correctly. All 10 tests passed: forgot-password endpoint with valid/invalid emails, reset-password with valid/invalid/expired codes, single-use code enforcement, login with new password, old password invalidation, and proper error handling for empty fields and validation."
+
 frontend:
   # No frontend testing performed as per instructions
 
