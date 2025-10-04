@@ -146,11 +146,22 @@ const Dashboard = ({ user, onLogout }) => {
   };
 
   const handleToggleComplete = async (taskId, completed) => {
-    await handleUpdateTask(taskId, { completed });
-    toast({
-      title: completed ? "Task completed!" : "Task marked incomplete",
-      description: completed ? "Great job! Keep up the momentum." : "Task moved back to active list.",
-    });
+    try {
+      const updatedTask = await tasksAPI.toggleComplete(taskId);
+      setTasks(prev => prev.map(task => 
+        task.id === taskId ? updatedTask : task
+      ));
+      toast({
+        title: updatedTask.completed ? "Task completed!" : "Task marked incomplete",
+        description: updatedTask.completed ? "Great job! Keep up the momentum." : "Task moved back to active list.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error updating task",
+        description: error.response?.data?.detail || error.message,
+        variant: "destructive"
+      });
+    }
   };
 
   const filteredTasks = useMemo(() => {
