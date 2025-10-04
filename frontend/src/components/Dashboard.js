@@ -70,9 +70,9 @@ const Dashboard = ({ user, onLogout }) => {
 
   const handleUpdateTask = async (taskId, updates) => {
     try {
-      await mockAPI.updateTask(taskId, updates);
+      const updatedTask = await tasksAPI.update(taskId, updates);
       setTasks(prev => prev.map(task => 
-        task.id === taskId ? { ...task, ...updates } : task
+        task.id === taskId ? updatedTask : task
       ));
       if (editingTask) {
         setEditingTask(null);
@@ -81,7 +81,7 @@ const Dashboard = ({ user, onLogout }) => {
     } catch (error) {
       toast({
         title: "Error updating task",
-        description: error.message,
+        description: error.response?.data?.detail || error.message,
         variant: "destructive"
       });
     }
