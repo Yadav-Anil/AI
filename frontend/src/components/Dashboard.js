@@ -104,6 +104,47 @@ const Dashboard = ({ user, onLogout }) => {
     }
   };
 
+  const exportToCSV = () => {
+    const csvData = filteredTasks.map(task => {
+      const category = categories.find(c => c.id === task.categoryId);
+      return {
+        Title: task.title,
+        Description: task.description,
+        Category: category?.name || '',
+        Priority: task.priority,
+        'Due Date': task.dueDate,
+        Status: task.completed ? 'Completed' : 'Pending',
+        Tags: task.tags.join(', '),
+        'Created Date': task.createdAt
+      };
+    });
+
+    const headers = Object.keys(csvData[0] || {});
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => 
+        headers.map(header => 
+          JSON.stringify(row[header] || '')
+        ).join(',')
+      )
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `tasks_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({
+      title: "Export successful",
+      description: `${filteredTasks.length} tasks exported to CSV.`,
+    });
+  };
+
   const handleToggleComplete = async (taskId, completed) => {
     await handleUpdateTask(taskId, { completed });
     toast({
