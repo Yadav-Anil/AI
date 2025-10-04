@@ -241,26 +241,25 @@ const Dashboard = ({ user, onLogout }) => {
                     Add Task
                   </Button>
                 </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>{editingTask ? 'Edit Task' : 'Create New Task'}</DialogTitle>
+                  </DialogHeader>
+                  <TaskForm 
+                    task={editingTask}
+                    categories={categories}
+                    onSubmit={editingTask ? 
+                      (data) => handleUpdateTask(editingTask.id, data) : 
+                      handleCreateTask
+                    }
+                    onCancel={() => {
+                      setIsTaskFormOpen(false);
+                      setEditingTask(null);
+                    }}
+                  />
+                </DialogContent>
               </Dialog>
             </div>
-              <DialogContent className="max-w-md">
-                <DialogHeader>
-                  <DialogTitle>{editingTask ? 'Edit Task' : 'Create New Task'}</DialogTitle>
-                </DialogHeader>
-                <TaskForm 
-                  task={editingTask}
-                  categories={categories}
-                  onSubmit={editingTask ? 
-                    (data) => handleUpdateTask(editingTask.id, data) : 
-                    handleCreateTask
-                  }
-                  onCancel={() => {
-                    setIsTaskFormOpen(false);
-                    setEditingTask(null);
-                  }}
-                />
-              </DialogContent>
-            </Dialog>
             
             <Button 
               variant="outline" 
