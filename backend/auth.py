@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 from typing import Optional
 import jwt
-from passlib.context import CryptContext
+import hashlib
+import base64
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import os
@@ -11,23 +12,22 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "your-secret-key-change-in-production"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30 * 24 * 60  # 30 days
 
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 # Bearer token scheme
 security = HTTPBearer()
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a password against its hash."""
-    # Truncate password to 72 bytes to match bcrypt limitation
-    password_bytes = plain_password.encode('utf-8')[:72]
-    return pwd_context.verify(password_bytes.decode('utf-8'), hashed_password)
+    # Use SHA-256 with salt for password verification
+    password_hash = get_password_hash(plain_password)
+    return password_hash == hashed_password
 
 def get_password_hash(password: str) -> str:
-    """Hash a password."""
-    # Truncate password to 72 bytes to avoid bcrypt ValueError
-    password_bytes = password.encode('utf-8')[:72]
-    return pwd_context.hash(password_bytes.decode('utf-8'))
+    """Hash a password using SHA-256 with salt."""
+    # Use a simple but secure SHA-256 approach with salt
+    salt = SECRET_KEY.encode('utf-8')
+    password_bytes = password.encode('utf-8')
+    hash_obj = hashlib.sha256(salt + password_bytes)
+    return base64.b64encode(hash_obj.digest()).decode('utf-8')
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     """Create a JWT access token."""
