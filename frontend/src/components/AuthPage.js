@@ -14,11 +14,6 @@ const AuthPage = ({ onLogin }) => {
   const [showPasswordReset, setShowPasswordReset] = useState(false);
   const { toast } = useToast();
 
-  // Show password reset component
-  if (showPasswordReset) {
-    return <PasswordReset onBack={() => setShowPasswordReset(false)} />;
-  }
-
   const [loginForm, setLoginForm] = useState({
     email: '',
     password: ''
