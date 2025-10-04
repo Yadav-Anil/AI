@@ -107,7 +107,15 @@ export const mockAPI = {
   getTasks: () => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(mockTasks);
+        // Load tasks from localStorage if available
+        const storedTasks = localStorage.getItem('todoApp_tasks');
+        if (storedTasks) {
+          const tasks = JSON.parse(storedTasks);
+          // Update mockTasks array with stored data
+          mockTasks.length = 0;
+          mockTasks.push(...tasks);
+        }
+        resolve([...mockTasks]);
       }, 500);
     });
   },
