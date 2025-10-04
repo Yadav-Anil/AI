@@ -103,6 +103,99 @@ async def get_current_user(
         created_at=user_doc["created_at"]
     )
 
+@router.post("/forgot-password", response_model=dict)
+async def forgot_password(
+    request_data: PasswordResetRequest, 
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """Initiate password reset process."""
+    # Check if user exists
+    user_doc = await db.users.find_one({"email": request_data.email})
+    if not user_doc:
+        # Don't reveal if email exists or not for security
+        return {
+            "message": "If an account with this email exists, a reset code has been sent.",
+            "success": True
+        }
+    
+    # Generate a simple 6-digit reset code
+    import random
+    reset_code = str(random.randint(100000, 999999))
+    
+    # Store reset code in database (expires in 15 minutes)
+    from datetime import datetime, timedelta
+    expires_at = datetime.utcnow() + timedelta(minutes=15)
+    
+    await db.password_resets.update_one(
+        {"email": request_data.email},
+        {
+            "$set": {
+                "email": request_data.email,
+                "reset_code": reset_code,
+                "expires_at": expires_at,
+                "used": False
+            }
+        },
+        upsert=True
+    )
+    
+    # In a real application, you would send this code via email
+    # For demo purposes, we'll return it (remove this in production)
+    return {
+        "message": "If an account with this email exists, a reset code has been sent.",
+        "success": True,
+        "demo_reset_code": reset_code  # Remove this in production!
+    }
+
+@router.post("/reset-password", response_model=dict)
+async def reset_password(
+    reset_data: PasswordResetConfirm,
+    db: AsyncIOMotorDatabase = Depends(get_database)
+):
+    """Confirm password reset with code."""
+    # Check if reset code is valid
+    reset_doc = await db.password_resets.find_one({
+        "email": reset_data.email,
+        "reset_code": reset_data.reset_code,
+        "used": False,
+        "expires_at": {"$gt": datetime.utcnow()}
+    })
+    
+    if not reset_doc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired reset code"
+        )
+    
+    # Check if user exists
+    user_doc = await db.users.find_one({"email": reset_data.email})
+    if not user_doc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    # Update password
+    password_hash = get_password_hash(reset_data.new_password)
+    await db.users.update_one(
+        {"email": reset_data.email},
+        {"$set": {
+            "password_hash": password_hash,
+            "updated_at": datetime.utcnow()
+        }}
+    )
+    
+    # Mark reset code as used
+    await db.password_resets.update_one(
+        {"email": reset_data.email, "reset_code": reset_data.reset_code},
+        {"$set": {"used": True}}
+    )
+    
+    return {
+        "message": "Password has been reset successfully. You can now login with your new password.",
+        "success": True
+    }
+
 async def create_default_categories(db: AsyncIOMotorDatabase, user_id: str):
     """Create default categories for a new user."""
     from models.Category import Category
