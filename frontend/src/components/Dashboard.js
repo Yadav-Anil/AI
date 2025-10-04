@@ -162,7 +162,8 @@ const Dashboard = ({ user, onLogout }) => {
       const matchesPriority = filterPriority === 'all' || task.priority === filterPriority;
       const matchesStatus = filterStatus === 'all' || 
                            (filterStatus === 'completed' && task.completed) ||
-                           (filterStatus === 'pending' && !task.completed);
+                           (filterStatus === 'pending' && !task.completed) ||
+                           (filterStatus === 'overdue' && !task.completed && isOverdue(task.dueDate));
       
       return matchesSearch && matchesCategory && matchesPriority && matchesStatus;
     });
