@@ -11,21 +11,23 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const auth = localStorageAPI.getAuth();
-    if (auth) {
-      setUser(auth.user);
+    const token = tokenUtils.getToken();
+    const user = tokenUtils.getUser();
+    if (token && user) {
+      setUser(user);
     }
     setLoading(false);
   }, []);
 
   const handleLogin = (userData, token) => {
     setUser(userData);
-    localStorageAPI.setAuth(userData, token);
+    tokenUtils.setUser(userData);
+    tokenUtils.setToken(token);
   };
 
   const handleLogout = () => {
     setUser(null);
-    localStorageAPI.clearAuth();
+    tokenUtils.clearAll();
   };
 
   if (loading) {
