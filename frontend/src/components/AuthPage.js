@@ -61,8 +61,13 @@ const AuthPage = ({ onLogin }) => {
     setIsLoading(true);
 
     try {
-      const response = await mockAPI.register(registerForm.name, registerForm.email, registerForm.password);
-      onLogin(response.user, response.token);
+      const userData = {
+        name: registerForm.name,
+        email: registerForm.email,
+        password: registerForm.password
+      };
+      const response = await authAPI.register(userData);
+      onLogin(response.user, response.access_token);
       toast({
         title: "Account created!",
         description: "Welcome to TaskFlow! Your account has been created successfully.",
@@ -70,7 +75,7 @@ const AuthPage = ({ onLogin }) => {
     } catch (error) {
       toast({
         title: "Registration failed",
-        description: error.message,
+        description: error.response?.data?.detail || error.message,
         variant: "destructive"
       });
     } finally {
