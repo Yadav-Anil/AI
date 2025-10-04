@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { CheckCircle, User, Mail, Lock, Sparkles } from 'lucide-react';
 import { authAPI } from '../services/api';
 import { useToast } from '../hooks/use-toast';
+import PasswordReset from './PasswordReset';
 
 const AuthPage = ({ onLogin }) => {
   const [isLoading, setIsLoading] = useState(false);
