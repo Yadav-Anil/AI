@@ -37,7 +37,7 @@ async def get_tasks(
     
     if overdue is not None and overdue:
         # Filter for overdue tasks (not completed and due date < today)
-        today = date.today()
+        today = datetime.combine(date.today(), datetime.min.time())
         filter_query["completed"] = False
         filter_query["due_date"] = {"$lt": today}
     
