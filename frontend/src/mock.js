@@ -125,11 +125,13 @@ export const mockAPI = {
       setTimeout(() => {
         const newTask = {
           ...task,
-          id: Date.now().toString(),
+          id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
           createdAt: new Date().toISOString().split('T')[0],
           completed: false
         };
         mockTasks.push(newTask);
+        // Store in localStorage for persistence
+        localStorage.setItem('todoApp_tasks', JSON.stringify(mockTasks));
         resolve(newTask);
       }, 500);
     });
