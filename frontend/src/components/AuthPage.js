@@ -159,6 +159,18 @@ const AuthPage = ({ onLogin }) => {
                   >
                     {isLoading ? "Signing in..." : "Sign In"}
                   </Button>
+                  
+                  <div className="text-center mt-3">
+                    <Button 
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowPasswordReset(true)}
+                      className="text-gray-600 hover:text-orange-600 transition-colors"
+                    >
+                      Forgot Password?
+                    </Button>
+                  </div>
                 </form>
                 <div className="text-center text-sm text-gray-600 mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
                   <strong>Demo Mode:</strong><br />
