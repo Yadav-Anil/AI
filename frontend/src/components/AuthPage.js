@@ -29,8 +29,8 @@ const AuthPage = ({ onLogin }) => {
     setIsLoading(true);
 
     try {
-      const response = await mockAPI.login(loginForm.email, loginForm.password);
-      onLogin(response.user, response.token);
+      const response = await authAPI.login(loginForm);
+      onLogin(response.user, response.access_token);
       toast({
         title: "Welcome back!",
         description: "You've successfully logged in to your account.",
@@ -38,7 +38,7 @@ const AuthPage = ({ onLogin }) => {
     } catch (error) {
       toast({
         title: "Login failed",
-        description: error.message,
+        description: error.response?.data?.detail || error.message,
         variant: "destructive"
       });
     } finally {
