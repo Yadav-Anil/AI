@@ -52,7 +52,7 @@ const Dashboard = ({ user, onLogout }) => {
 
   const handleCreateTask = async (taskData) => {
     try {
-      const newTask = await mockAPI.createTask(taskData);
+      const newTask = await tasksAPI.create(taskData);
       setTasks(prev => [...prev, newTask]);
       setIsTaskFormOpen(false);
       toast({
@@ -62,7 +62,7 @@ const Dashboard = ({ user, onLogout }) => {
     } catch (error) {
       toast({
         title: "Error creating task",
-        description: error.message,
+        description: error.response?.data?.detail || error.message,
         variant: "destructive"
       });
     }
