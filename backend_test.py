@@ -724,6 +724,12 @@ def main():
     all_results.failed += task_results.failed
     all_results.errors.extend(task_results.errors)
     
+    print("\n🔐 Testing Password Reset...")
+    password_reset_results = test_password_reset()
+    all_results.passed += password_reset_results.passed
+    all_results.failed += password_reset_results.failed
+    all_results.errors.extend(password_reset_results.errors)
+    
     print("\n🔒 Testing User Data Isolation...")
     isolation_results = test_user_data_isolation()
     all_results.passed += isolation_results.passed
