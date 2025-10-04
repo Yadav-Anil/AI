@@ -11,7 +11,13 @@ import PasswordReset from './PasswordReset';
 
 const AuthPage = ({ onLogin }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showPasswordReset, setShowPasswordReset] = useState(false);
   const { toast } = useToast();
+
+  // Show password reset component
+  if (showPasswordReset) {
+    return <PasswordReset onBack={() => setShowPasswordReset(false)} />;
+  }
 
   const [loginForm, setLoginForm] = useState({
     email: '',
