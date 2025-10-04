@@ -3,7 +3,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
 import AuthPage from "./components/AuthPage";
-import { localStorageAPI } from "./mock";
+import { tokenUtils } from "./services/api";
 import { Toaster } from "./components/ui/toaster";
 
 function App() {
