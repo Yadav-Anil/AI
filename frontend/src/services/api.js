@@ -55,6 +55,16 @@ export const authAPI = {
     const response = await apiClient.get('/auth/me');
     return response.data;
   },
+
+  forgotPassword: async (email) => {
+    const response = await apiClient.post('/auth/forgot-password', { email });
+    return response.data;
+  },
+
+  resetPassword: async (resetData) => {
+    const response = await apiClient.post('/auth/reset-password', resetData);
+    return response.data;
+  },
 };
 
 // Categories API
