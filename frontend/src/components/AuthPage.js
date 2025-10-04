@@ -5,7 +5,7 @@ import { Label } from '../components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { CheckCircle, User, Mail, Lock, Sparkles } from 'lucide-react';
-import { mockAPI } from '../mock';
+import { authAPI } from '../services/api';
 import { useToast } from '../hooks/use-toast';
 
 const AuthPage = ({ onLogin }) => {
