@@ -220,16 +220,28 @@ const Dashboard = ({ user, onLogout }) => {
           </div>
           
           <div className="flex items-center gap-3">
-            <Dialog open={isTaskFormOpen} onOpenChange={setIsTaskFormOpen}>
-              <DialogTrigger asChild>
-                <Button 
-                  className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white transition-all duration-200 transform hover:scale-105"
-                  onClick={() => setEditingTask(null)}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Task
-                </Button>
-              </DialogTrigger>
+            <div className="flex items-center gap-2">
+              <Button 
+                onClick={exportToCSV}
+                variant="outline"
+                className="hover:bg-green-50 hover:border-green-200 transition-colors"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Export CSV
+              </Button>
+              
+              <Dialog open={isTaskFormOpen} onOpenChange={setIsTaskFormOpen}>
+                <DialogTrigger asChild>
+                  <Button 
+                    className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white transition-all duration-200 transform hover:scale-105"
+                    onClick={() => setEditingTask(null)}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Task
+                  </Button>
+                </DialogTrigger>
+              </Dialog>
+            </div>
               <DialogContent className="max-w-md">
                 <DialogHeader>
                   <DialogTitle>{editingTask ? 'Edit Task' : 'Create New Task'}</DialogTitle>
