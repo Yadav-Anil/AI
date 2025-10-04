@@ -28,3 +28,11 @@ class UserResponse(BaseModel):
     name: str
     email: str
     created_at: datetime
+
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
+class PasswordResetConfirm(BaseModel):
+    email: EmailStr
+    reset_code: str
+    new_password: str
