@@ -444,72 +444,75 @@ const Dashboard = ({ user, onLogout }) => {
                       />
                       
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2 mb-2">
-                          <h3 className={`font-semibold ${task.completed ? 'line-through text-gray-500' : 'text-gray-800'}`}>
-                            {task.title}
-                          </h3>
-                          <div className="flex items-center gap-1">
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => {
-                                setEditingTask(task);
-                                setIsTaskFormOpen(true);
-                              }}
-                              className="h-8 w-8 p-0 hover:bg-blue-100"
+                        <div className="flex items-start justify-between gap-4 mb-2">
+                          <div className="flex-1">
+                            <h3 className={`font-semibold mb-1 ${task.completed ? 'line-through text-gray-500' : 'text-gray-800'}`}>
+                              {task.title}
+                            </h3>
+                            {task.description && (
+                              <p className={`text-sm ${task.completed ? 'text-gray-400' : 'text-gray-600'}`}>
+                                {task.description}
+                              </p>
+                            )}
+                          </div>
+                          
+                          {/* Metadata in top right corner */}
+                          <div className="flex flex-col items-end gap-1 text-xs">
+                            {category && (
+                              <Badge 
+                                variant="outline" 
+                                className="flex items-center gap-1 text-xs h-5"
+                                style={{ borderColor: category.color, color: category.color }}
+                              >
+                                {getIconForCategory(category.icon)}
+                                {category.name}
+                              </Badge>
+                            )}
+                            
+                            <Badge className={`${getPriorityColor(task.priority)} text-xs h-5`}>
+                              <Flag className="h-2 w-2 mr-1" />
+                              {task.priority.toUpperCase()}
+                            </Badge>
+                            
+                            <Badge 
+                              variant="outline" 
+                              className={`flex items-center gap-1 text-xs h-5 ${
+                                overdueTask ? 'border-red-500 text-red-600 bg-red-50' : 'border-gray-300'
+                              }`}
                             >
-                              <Edit2 className="h-3 w-3" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => handleDeleteTask(task.id)}
-                              className="h-8 w-8 p-0 hover:bg-red-100"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </Button>
+                              <Calendar className="h-2 w-2" />
+                              {task.dueDate}
+                            </Badge>
+                            
+                            {/* Action buttons */}
+                            <div className="flex items-center gap-1 mt-1">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => {
+                                  setEditingTask(task);
+                                  setIsTaskFormOpen(true);
+                                }}
+                                className="h-6 w-6 p-0 hover:bg-blue-100"
+                              >
+                                <Edit2 className="h-3 w-3" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleDeleteTask(task.id)}
+                                className="h-6 w-6 p-0 hover:bg-red-100"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
                           </div>
                         </div>
                         
-                        {task.description && (
-                          <p className={`text-sm mb-3 ${task.completed ? 'text-gray-400' : 'text-gray-600'}`}>
-                            {task.description}
-                          </p>
-                        )}
-                        
-                        <div className="flex flex-wrap items-center gap-2 mb-3">
-                          {category && (
-                            <Badge 
-                              variant="outline" 
-                              className="flex items-center gap-1"
-                              style={{ borderColor: category.color, color: category.color }}
-                            >
-                              {getIconForCategory(category.icon)}
-                              {category.name}
-                            </Badge>
-                          )}
-                          
-                          <Badge className={getPriorityColor(task.priority)}>
-                            <Flag className="h-3 w-3 mr-1" />
-                            {task.priority} priority
-                          </Badge>
-                          
-                          <Badge 
-                            variant="outline" 
-                            className={`flex items-center gap-1 ${
-                              overdueTask ? 'border-red-500 text-red-600 bg-red-50' : 'border-gray-300'
-                            }`}
-                          >
-                            <Calendar className="h-3 w-3" />
-                            {task.dueDate}
-                            {overdueTask && ' (Overdue)'}
-                          </Badge>
-                        </div>
-                        
                         {task.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-1">
+                          <div className="flex flex-wrap gap-1 mt-2">
                             {task.tags.map(tag => (
-                              <Badge key={tag} variant="secondary" className="text-xs">
+                              <Badge key={tag} variant="secondary" className="text-xs h-5">
                                 #{tag}
                               </Badge>
                             ))}
