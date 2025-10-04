@@ -89,7 +89,7 @@ const Dashboard = ({ user, onLogout }) => {
 
   const handleDeleteTask = async (taskId) => {
     try {
-      await mockAPI.deleteTask(taskId);
+      await tasksAPI.delete(taskId);
       setTasks(prev => prev.filter(task => task.id !== taskId));
       toast({
         title: "Task deleted",
@@ -98,7 +98,7 @@ const Dashboard = ({ user, onLogout }) => {
     } catch (error) {
       toast({
         title: "Error deleting task",
-        description: error.message,
+        description: error.response?.data?.detail || error.message,
         variant: "destructive"
       });
     }
