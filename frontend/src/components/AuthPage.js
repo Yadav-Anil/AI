@@ -85,6 +85,11 @@ const AuthPage = ({ onLogin }) => {
     }
   };
 
+  // Show password reset component
+  if (showPasswordReset) {
+    return <PasswordReset onBack={() => setShowPasswordReset(false)} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
