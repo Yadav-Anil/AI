@@ -47,7 +47,7 @@ async def get_tasks(
         filter_query["$or"] = [
             {"title": search_regex},
             {"description": search_regex},
-            {"tags": {"$in": [search_regex]}}
+            {"tags": search_regex}
         ]
     
     # Get tasks from database
