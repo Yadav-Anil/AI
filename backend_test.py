@@ -69,10 +69,12 @@ def test_authentication():
     """Test all authentication endpoints"""
     results = TestResults()
     
-    # Test data
+    # Test data with unique email using timestamp
+    import time
+    timestamp = str(int(time.time()))
     test_user = {
         "name": "John Doe",
-        "email": "john.doe@example.com",
+        "email": f"john.doe.{timestamp}@example.com",
         "password": "securepassword123"
     }
     
